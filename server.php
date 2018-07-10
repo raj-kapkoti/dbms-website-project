@@ -2,11 +2,12 @@
 
 session_start();
 $username="";
-$errors=array();
+$error="";
+ 
 
 $db=mysqli_connect('localhost','root','','users');
 
-if(isset($_POST['submit'])){
+if(isset($_POST['signup'])){
     $name=   mysqli_real_escape_string($db,$_POST['name']);
     $username= mysqli_real_escape_string($db,$_POST['username']);
     $email= mysqli_real_escape_string($db,$_POST['email']);
@@ -18,52 +19,52 @@ if(isset($_POST['submit'])){
     $gender= mysqli_real_escape_string($db,$_POST['gender']);
     
 
-if(empty($username)){array_push($errors,"username is empty");}
-    if ($password1 != $cpassword){array_push($errors,"password does not match");}
+    //encrypting the password
+    $password1=md5($password1);
+$query= "SELECT * FROM users WHERE username='$username'";
     
-    if(count($errors)==0){
-        $password=md5($password1);
+    $result = mysqli_query($db, $query);
         
+    if(mysqli_num_rows($result)!=1)
+        {
             mysqli_query($db,"INSERT INTO users(id,name,username,email,phone,address,dob,password,gender) values('','$name','$username','$email','$phone','$address','$dob','$password1','$gender')");
         
-        
             $_SESSION['username']=$username;
-    $_SESSION['success']="you are loged in";
-    header('location: main_page.php');
-    }
-     if(!mysqli_query($db,$sql))
-       {echo 'not insered';}
-        else
-        {echo 'inserted';}
+    header('location: main_page.php?username=exist');
+        }
+    else
+        header('location:resister_page.php');
       
 }
 
 //login=>
 if(isset($_POST['login']))
 {
-    $username= mysqli_real_escape_string($db,$_POST['username']);
-    $password1= mysqli_real_escape_string($db,$_POST['password1']);
+    $username= mysqli_real_escape_string($db,$_POST['Login_username']);
+    $password1= mysqli_real_escape_string($db,$_POST['Login_password']);
     
-    if(count($errors)==0)
-    {
-        $password=md5($password1);
-        $query= "SELECT * FROM users WHERE username='$username' AND password1='$password1'";
-        $result = mysqli_query($db, $query);
+       $password=md5($password1);
+
+    $query= "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    
+    $result = mysqli_query($db, $query);
+    
         if(mysqli_num_rows($result)==1)
-        {//log user
+        {//log user            
         $_SESSION ['username']= $username;
-        $_SESSION ['success']= 'you are logged in';
-        header('location: main_page.php');
+        header("location:main_page.php");
         }
-        else{
-        array_push($errors, 'the username/password is wrong');
-        }
-    }
+        else
+        {
+   header('location:login_page.php?loginerror');
+            }
 }
+
 
 
 //logout=>
 if(isset($_GET['logout'])){
+    
     session_destroy();
     unset($_SESSION['username']);
     header('location:login_page.php');

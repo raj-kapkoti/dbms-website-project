@@ -22,7 +22,6 @@
 		<form method="post" action="resister_page.php">
 		
             
-            <?php include('errors.php'); ?>
             
             
             <div style=" opacity:1;background-color:white; padding:1px">
@@ -58,7 +57,7 @@
             
             <input type="checkbox" name="terms" required checked ><b>I agree to the following <a href="terms.html">Terms and Conditions</a> and would like to join the FactDec.</b><br><br>
             
-        <input type="submit" name="submit"  class="btncolor"   value="Sign up">  <input type="reset" name="reset" value="reset">   
+        <input type="submit" name="signup"  class="btncolor"   value="Sign up">  <input type="reset" name="reset" value="reset">   
 	</form>	
 	</td></tr></table>
         </center>		
